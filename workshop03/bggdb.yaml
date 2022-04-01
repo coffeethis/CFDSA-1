@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1 
+kind: Deployment 
+metadata:
+  name: bggdb-deploy 
+  labels:
+    name: bggdb-deploy 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: bggdb-po 
+  template:
+    metadata:
+      name: bggdb-po 
+      labels:
+        name: bggdb-po 
+    spec:
+      containers:
+      - name: bggdb-container
+        image: stackupiss/bgg-database:v1
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: bggdb-vol
+        ports:
+        - name: bggdb-port
+          containerPort: 3306
+      volumes:
+      - name: bggdb-vol
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bggdb-svc
+  labels:
+    name: bggdb-svc
+spec:
+  type: ClusterIP
+  selector:
+    name: bggdb-po 
+  ports:
+  - port: 3306
+    targetPort: bggdb-port

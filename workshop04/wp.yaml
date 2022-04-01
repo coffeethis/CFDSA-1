@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  labels:
+    name: wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      name: wordpress_pod
+      labels:
+        name: wordpress_pod
+        app: wordpress
+    spec:
+      containers:
+        - name: wordpress
+          image: wordpress:latest
+          ports:
+          - containerPort: 80
+            name: wordpress
+          volumeMounts:
+            - name: wordpress-data
+              mountPath: /var/www
+          env:
+            - name: WORDPRESS_DB_HOST
+              value: mysql-service.lab04.svc.cluster.local
+            - name: WORDPRESS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wp-db-secrets
+                  key: MYSQL_ROOT_PASSWORD
+            - name: WORDPRESS_DB_USER
+              value: root
+            - name: WORDPRESS_DB_NAME
+              value: wordpress
+      volumes:
+        - name: wordpress-data
+          persistentVolumeClaim:
+            claimName: wordpress-volume
+---
+apiVersion: v1 
+kind: Service 
+metadata:
+  name: wp-svc 
+  labels:
+    name: wp-svc
+spec:
+  type: ClusterIP
+  selector:
+    name: wordpress_pod
+  ports:
+  - port: 80
+    targetPort: wordpress
