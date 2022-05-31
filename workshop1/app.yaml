@@ -1,0 +1,26 @@
+# app.yaml
+
+runtime: nodejs14
+
+handlers:
+  - url: /
+    static_files: index.html
+    upload: index.html
+
+  - url: /
+    static_files: index.js
+    upload: index.js
+
+  - url: /scripts
+    static_files: dynamic_text.js
+    upload: /public/scripts/dynamic_text.js
+
+  - url: /images
+    static_files: doremon.jpg
+    upload: /public/images/doremon.jpg
+
+  - url: /scripts
+    static_dir: public/scripts
+
+  - url: /images
+    static_dir: public/images
