@@ -1,0 +1,60 @@
+Task2
+
+#Step 1: Create a network in docker
+docker network create nw-net
+
+#Step 2: create the volume for nw-db to attach to 
+docker volume create nw-01
+
+#Step 3: create db container with nw-01 vol
+
+docker run -d -p 3306:3306 \ 
+      -v nw-01:/var/lib/mysql \
+      stackupiss/northwind-db:v1
+
+
+#Optional if port is not to be expose
+docker run -d \
+      --name nwdb \  
+      -v nw-01:/var/lib/mysql \
+      --network nw-net \
+      stackupiss/northwind-db:v1
+
+
+#Step4 : Inspect the network
+
+docker network inspect
+
+#Step5 :Rrun the web app in nw-net network
+
+docker run -d -p 8080:3000 --name nwapp --network nw-net -e DB_HOST=nwdb -e DBUSER=root -eDB_PASSWORD=changeit stackupiss/northwind-app:v1
+
+
+
+docker run -ti --rm 
+
+Default password for mysql is "changeit"
+
+docker ps
+
+docker exec 3ef -ti bash
+
+
+root@3efxxxx:/#mysql -uroot -p
+Enter password: changeit
+
+mysql> use tables;
+mysql> use northwind;
+mysql> select * from customers limit 5;
+
+
+
+Dockers deploy containers with default subnet
+
+
+
+
+
+
+
+
