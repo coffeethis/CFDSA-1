@@ -1,0 +1,55 @@
+docker run -d -p 8080:3000 -e oINSTANCE_NAME="GO dov-bear" chukmunnlee/dov.-bear:v1golang
+
+docker ps
+
+coker images | grep dov-bear
+docker tag chukmunnlee/dov-bear:v1golang ghcr.io/chkmunnlee/dov.-bear:v1golang
+
+docker images | grep dov-bear
+git push ghcr.io/chukmunnlee/dov-bear:v1golang
+
+Go back to github repo and click on repo
+
+To make it public, go to repo and click on package settings and change visibility 
+at the very end.
+
+gitad add .
+git commit -m 'day1 PM demos'
+
+
+To have the repo to a package
+
+Connecting a repository to github
+
+LABEL org.opencontainers.image.source=https://github.com/<github owner>/<repo>
+
+Put the above LABEL into the Dockerfile
+
+cd golang
+
+git add.
+git commit -m 'add LABEL to package'
+
+docker build -t ghcr.io/<owner>/dov-bear:v1golang
+
+docker push ghcr.io/<owner>/dov-bear:v1golang
+
+
+github.com/sigstore/cosign/releases
+
+On Mac, have to make co-sign-darwin-amd64 and make it executable.
+
+
+cosign generate-key-pair
+
+cosign sign --key ./cosign.key ghcr.io/<author>/
+cosign verify --key 
+
+
+docker inspect 4fe | less
+
+
+
+
+
+
