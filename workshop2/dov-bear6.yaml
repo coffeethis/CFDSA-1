@@ -1,0 +1,77 @@
+# define a config map
+---
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: dov-bear-cm
+      labels:
+        name: dov-bear-cm
+        dept: eng
+    data:
+      INSTANCE_NAME: k8s dov-bear configmap
+
+# define a secret to read by app
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dov-bear-secret
+  labels:
+    name: dov-bear-secret
+    dept: eng
+type: Opaque
+data:
+  INSTANCE_NAME: ZG92LWJlYXItc2VjcmV0cw==
+
+# define a deployment with replicas and containers template
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dov-bear-deployment
+  labels:
+    name: dov-bear-deployment
+    dept: eng
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      name: dov-bear-po
+  template:
+    metadata:
+      name: dov-bear-po
+      labels:
+          name: dov-bear-po
+          dept: eng
+    spec: 
+      containers:
+      - name: dov-bear-container
+        image: chukmunnlee/dov-bear:v2
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - secretRef:
+            name: dov-bear-secret
+        ports:
+        - name: dov-bear-port
+          containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+            scheme: HTTP
+
+# Defining a service and using LBs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dov-bear-svc
+  labels:
+    name: dov-bear-svc
+spec:
+  type: LoadBalancer
+  selector:
+    name: dov-bear-po
+  ports:
+  - port: 80
+    targetPort: 3000

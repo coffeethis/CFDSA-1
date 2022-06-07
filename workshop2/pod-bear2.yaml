@@ -1,0 +1,29 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dov-bear-cm
+  labels:
+    name: dov-bear-cm
+    dept: eng
+data:
+  INSTANCE_NAME: k8s dov-bear configmap
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dov-bear
+  labels:
+    name: dov-bear
+    dept: eng
+spec: 
+    containers:
+    - name: dov-bear-container
+      image: chukmunnlee/dov-bear:v2
+      imagePullPolicy: IfNotPresent
+      envFrom:
+      - configMapRef:
+          name: dov-bear-cm
+      ports:
+      - containerPort: 3000
