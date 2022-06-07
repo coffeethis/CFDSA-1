@@ -36,8 +36,16 @@ spec:
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 3000
+            port: bggapp-port
             scheme: HTTP
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: bggapp-port
+          timeoutSeconds: 5
+          failureThreshold: 1
+            
+
 
 ---
 apiVersion: v1 
