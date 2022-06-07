@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: bggapp-container
-        image: stackupiss/bgg-backend:v1
+        image: stackupiss/bgg-backend:v2
         imagePullPolicy: IfNotPresent
         envFrom:
         - configMapRef:
@@ -33,6 +33,11 @@ spec:
         ports:
         - name: bggapp-port
           containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+            scheme: HTTP
 
 ---
 apiVersion: v1 
