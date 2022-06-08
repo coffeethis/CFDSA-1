@@ -72,9 +72,63 @@ kctl get po -nmyns -owide
 kctl get no/dov-bear -nmyns -oyaml
 
 # to force delete
-kctl delete po/dov-bear -nmyns -- force --grace-period=0
+kctl delete po/dov-bear -nmyns --force --grace-period=0
 export now="--force --grace-period=0"
 
 # apply changes if there are code changes.
 kctl apply -f pod-bear.yaml -nmyns
+
+
+kctl get cm/dov-bear-cm
+kctl describe cm/dov-bear-cm
+
+# to list secrets
+kctl get secret
+
+# default k8s service account
+kctl describe secret/default-token-gxzfc
+
+
+#scale up/down pods
+kctl scale deploy/<name> --replicas=n -n <namespace>
+
+
+kctl cluster info
+
+kctl describe deploy 
+
+# scale replica set
+
+kctl scale rs/dov-bear-deploy-xxxxxx --replicas=2 -nmyns
+
+
+kctl logs deploy/dov-bear-deploy-xxxxxx
+
+kctl port-forward
+
+kctl exec po/
+
+# to troubleshoot connection
+kctl run netshoot --image=nicolaka/netshoot:latest -ti --rm -- bash
+
+#after bash login
+# #nslookuo dov-bear-svc.myns.svc.cluster.local
+# #curl dov-bear-svc.myns.svc.cluster.local:8080
+
+# kctl get svc -owide 
+
+# rollback with version
+kctl get deploy/dov-bear-deploy -ndovns -oyaml | vim -c 'set ft=yaml'
+
+# k8s has two networks. One is pod network and second is service network.
+# kctl cluster-info 
+# whenever pod is created, it adds an entry to kube-proxy and gets a IP from pod CIDR nw.
+
+# setup HA for K8S cluster
+
+# Ports in K8S
+# ContainerPort, TargetPort, NodePort, ServicePort
+# Service - ClusterIP, NodePort, LoadBalancer
+
+
 
